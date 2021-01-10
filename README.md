@@ -1,4 +1,4 @@
-# video-converter
+# Video Converter
 
 ## Project setup
 ```
