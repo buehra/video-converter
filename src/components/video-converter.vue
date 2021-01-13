@@ -1,15 +1,17 @@
 <template>
+
   <div>
-    <input
-      type="file"
-      v-on:change="onUploadFile"
-      ref="upload"
+    <v-file-input
+      v-on:change="onChange"
       accept="video/mp4,video/x-m4v,video/*"
-    />
+      chips
+      show-size
+      truncate-length="20"
+    ></v-file-input>
     <br />
     <video controls width="250" v-if="uploadedVideoUrl != ''" v-bind:src="uploadedVideoUrl" />
     <br />
-    <button v-if="ffmpeqIsLoaded" v-on:click="convertToGif">Convert</button>
+    <v-btn elevation="2" v-if="ffmpeqIsLoaded" v-on:click="convertToGif">Convert</v-btn>
     <br />
     <img v-if="gifUrl != ''" v-bind:src="gifUrl" width="250"/>
   </div>
@@ -28,13 +30,10 @@ export default class VideoConverter extends Vue {
   private gifUrl: string = '';
   private ffmpeqIsLoaded: boolean = false;
 
-  private onUploadFile(event: InputEvent): void {
-    const files: ReadonlyArray<File> = [
-      ...(this.upload.files ? this.upload.files : []),
-    ];
-    // tslint:disable: no-console
-    this.uploadedVideo = files[0];
+  private onChange(file: File): void {
+    this.uploadedVideo = file;
     this.uploadedVideoUrl = this.videoUrl;
+    // tslint:disable: no-console
   }
 
   private async convertToGif(): Promise<void> {
@@ -49,10 +48,6 @@ export default class VideoConverter extends Vue {
       return URL.createObjectURL(this.uploadedVideo as Blob);
     }
     return '';
-  }
-
-  private get upload(): HTMLInputElement {
-    return this.$refs.upload as HTMLInputElement;
   }
 
   private async created() {

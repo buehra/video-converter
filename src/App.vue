@@ -1,26 +1,28 @@
 <template>
-  <div id="app">
-    <router-view />
-  </div>
+  <v-app>
+    <Navigation />
+    <v-main>
+      <router-view />
+    </v-main>
+    <Footer />
+  </v-app>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import Vue from 'vue';
+import Navigation from './components/Navigation.vue';
+import Footer from './components/Footer.vue';
 
-@Component({
+export default Vue.extend({
+  name: 'App',
+
   components: {
+    Navigation,
+    Footer,
   },
-})
-export default class App extends Vue {}
-</script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+  data: () => ({
+    //
+  }),
+});
+</script>
