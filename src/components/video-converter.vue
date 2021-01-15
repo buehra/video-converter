@@ -1,6 +1,12 @@
 <template>
-
-  <div>
+<v-container m-2>
+  <v-card
+  class="mx-auto"
+  color="secondary"
+  elevation="24"
+  shaped
+  >
+  <v-container m-2>
     <v-file-input
       v-on:change="onChange"
       accept="video/mp4,video/x-m4v,video/*"
@@ -8,13 +14,17 @@
       show-size
       truncate-length="20"
     ></v-file-input>
-    <br />
-    <video controls width="250" v-if="uploadedVideoUrl != ''" v-bind:src="uploadedVideoUrl" />
-    <br />
-    <v-btn elevation="2" v-if="ffmpeqIsLoaded" v-on:click="convertToGif">Convert</v-btn>
-    <br />
-    <img v-if="gifUrl != ''" v-bind:src="gifUrl" width="250"/>
-  </div>
+    </v-container>
+    <v-container m-2>
+      <v-btn block :loading="!ffmpeqIsLoaded" v-on:click="convertToGif">Convert</v-btn>
+    </v-container>
+    <v-container m-2 class="mx-auto">
+      <a v-if="gifUrl != ''" v-bind:href="gifUrl" download="Test.gif">
+        <img v-bind:src="gifUrl" width="250"/>
+      </a>
+    </v-container>
+  </v-card>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -26,26 +36,17 @@ export default class VideoConverter extends Vue {
   @Prop() private msg!: string;
   private converterService: ConvertService = new ConvertService();
   private uploadedVideo?: File;
-  private uploadedVideoUrl: string = '';
   private gifUrl: string = '';
   private ffmpeqIsLoaded: boolean = false;
 
   private onChange(file: File): void {
     this.uploadedVideo = file;
-    this.uploadedVideoUrl = this.videoUrl;
     // tslint:disable: no-console
   }
 
   private async convertToGif(): Promise<void> {
     const outputBlob = await this.converterService.convertToGif(this.uploadedVideo!);
     this.gifUrl = URL.createObjectURL(outputBlob);
-  }
-
-  private get videoUrl(): string {
-    if (this.uploadedVideo != null) {
-      return URL.createObjectURL(this.uploadedVideo as Blob);
-    }
-    return '';
   }
 
   private async created() {
