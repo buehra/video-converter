@@ -11,9 +11,22 @@ class ConverterSrvice {
         await this.ffmpeg.load();
     }
 
-    public async convertToGif(file: File): Promise<Blob> {
-        this.ffmpeg.FS('writeFile', 'test.MOV', await fetchFile(file));
-        await this.ffmpeg.run('-i', 'test.MOV', '-t', '3', '-f', 'gif', 'out.gif');
+    public async convert(file: File, format: string): Promise<Blob> {
+        switch (format) {
+            default: // default is gif
+                return await this.convertToGif(file);
+        }
+
+    }
+
+    public getSupportetFormats(): string[] {
+        const list: string[] = ['gif'];
+        return list;
+    }
+
+    private async convertToGif(file: File): Promise<Blob> {
+        this.ffmpeg.FS('writeFile', file.name, await fetchFile(file));
+        await this.ffmpeg.run('-i', file.name, 'out.gif');
         const data = this.ffmpeg.FS('readFile', 'out.gif');
         return new Blob([data.buffer], { type: 'image/gif' });
     }

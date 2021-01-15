@@ -7,6 +7,10 @@
   shaped
   >
   <v-container m-2>
+    <v-row>
+      <v-col class="d-flex"
+        cols="12"
+        sm="10">
     <v-file-input
       v-on:change="onChange"
       accept="video/mp4,video/x-m4v,video/*"
@@ -14,14 +18,30 @@
       show-size
       truncate-length="20"
     ></v-file-input>
+      </v-col>
+      <v-col class="d-flex"
+        cols="12"
+        sm="2">
+    <v-select 
+    :items="supportetFormats"
+    label="Convert to"
+    outlined
+    v-model="selectedFormat"
+    ></v-select>
+      </v-col>
+    </v-row>
     </v-container>
     <v-container m-2>
       <v-btn block :loading="!ffmpeqIsLoaded" v-on:click="convertToGif">Convert</v-btn>
     </v-container>
-    <v-container m-2 class="mx-auto">
-      <a v-if="gifUrl != ''" v-bind:href="gifUrl" download="Test.gif">
-        <img v-bind:src="gifUrl" width="250"/>
-      </a>
+    <v-container m-2>
+      <v-row align="center">
+        <v-col>
+          <a v-if="gifUrl != ''" v-bind:href="gifUrl" download="Test.gif">
+            <img v-bind:src="gifUrl" width="250"/>
+          </a>
+        </v-col>
+      </v-row>
     </v-container>
   </v-card>
   </v-container>
@@ -38,6 +58,7 @@ export default class VideoConverter extends Vue {
   private uploadedVideo?: File;
   private gifUrl: string = '';
   private ffmpeqIsLoaded: boolean = false;
+  private selectedFormat: string = '';
 
   private onChange(file: File): void {
     this.uploadedVideo = file;
@@ -45,8 +66,14 @@ export default class VideoConverter extends Vue {
   }
 
   private async convertToGif(): Promise<void> {
-    const outputBlob = await this.converterService.convertToGif(this.uploadedVideo!);
+    this.ffmpeqIsLoaded = false;
+    const outputBlob = await this.converterService.convert(this.uploadedVideo!, this.selectedFormat);
     this.gifUrl = URL.createObjectURL(outputBlob);
+    this.ffmpeqIsLoaded = true;
+  }
+
+  private get supportetFormats(): string[] {
+    return this.converterService.getSupportetFormats();
   }
 
   private async created() {
