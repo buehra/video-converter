@@ -19,12 +19,12 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
+import ConvertService from './../services/ConverterService';
 
-const ffmpeg = createFFmpeg({ log: true });
 @Component
 export default class VideoConverter extends Vue {
   @Prop() private msg!: string;
+  private converterService: ConvertService = new ConvertService();
   private uploadedVideo?: File;
   private uploadedVideoUrl: string = '';
   private gifUrl: string = '';
@@ -37,10 +37,8 @@ export default class VideoConverter extends Vue {
   }
 
   private async convertToGif(): Promise<void> {
-    ffmpeg.FS('writeFile', 'test.MOV', await fetchFile(this.uploadedVideo));
-    await ffmpeg.run('-i', 'test.MOV', '-t', '3', '-f', 'gif', 'out.gif');
-    const data = ffmpeg.FS('readFile', 'out.gif');
-    this.gifUrl = URL.createObjectURL(new Blob([data.buffer], { type: 'image/gif' }));
+    const outputBlob = await this.converterService.convertToGif(this.uploadedVideo!);
+    this.gifUrl = URL.createObjectURL(outputBlob);
   }
 
   private get videoUrl(): string {
@@ -51,7 +49,7 @@ export default class VideoConverter extends Vue {
   }
 
   private async created() {
-    await ffmpeg.load();
+    await this.converterService.load();
     this.ffmpeqIsLoaded = true;
   }
 }
