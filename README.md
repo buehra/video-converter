@@ -1,5 +1,12 @@
 # Video Converter
 
+<img src="https://heroku-badge.herokuapp.com/?app=heroku-badge" />
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=buehra_video-converter&metric=alert_status)](https://sonarcloud.io/dashboard?id=buehra_video-converter)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=buehra_video-converter&metric=code_smells)](https://sonarcloud.io/dashboard?id=buehra_video-converter)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=buehra_video-converter&metric=bugs)](https://sonarcloud.io/dashboard?id=buehra_video-converter)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=buehra_video-converter&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=buehra_video-converter)
+
 ## Project setup
 ```
 npm install
